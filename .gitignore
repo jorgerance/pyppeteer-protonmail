@@ -1,3 +1,8 @@
+# Custom ignores for this project
+screenshots/*.png
+.secrets.cfg
+*.xcf
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
