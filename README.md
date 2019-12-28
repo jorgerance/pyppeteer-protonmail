@@ -1,15 +1,10 @@
 # pyppeteer - Log in to Protonmail with 2fa
 
-
-## Description
-
-Using [pyppeteer](https://pypi.org/project/pyppeteer/), an uofficial Python port of [puppeteer](https://github.com/GoogleChrome/puppeteer) JavaScript (headless) chrome/chromium browser automation library, to log into [Protonmail](https://protonmail.com/)
+Using **[pyppeteer](https://pypi.org/project/pyppeteer/)**, an uofficial Python port of **[puppeteer](https://github.com/GoogleChrome/puppeteer)** JavaScript (headless) chrome/chromium browser automation library, to log into [Protonmail](https://protonmail.com/)
 
 ---
 
-## Requirements
-
-### Packages
+## Packages
 
 | Package   | Version | Description                                                                |
 | --------- | ------- | -------------------------------------------------------------------------- |
@@ -17,7 +12,7 @@ Using [pyppeteer](https://pypi.org/project/pyppeteer/), an uofficial Python port
 | mintotp   | 0.2.0   | Minimal TOTP Generator                                                     |
 
 
-### .secrets.cfg
+## .secrets.cfg
 
 Enter your login credentials in a **.secrets.cfg** file following an **.ini format**, which will be parsed by [configparser](https://pypi.org/project/configparser/), as in the example below:
 
