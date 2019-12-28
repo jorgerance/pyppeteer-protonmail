@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-from pyppeteer import launch
 import asyncio
 import configparser
-import time
-import mintotp
 import random
+
+import mintotp
+from pyppeteer import launch
 
 # protonmail login site url
 url = 'https://mail.protonmail.com/login'
@@ -16,10 +16,10 @@ config.read('.secrets.cfg')
 username = config.get("credentials", "username")
 password = config.get("credentials", "password")
 
-# otp_seet = None if no value has been set on secrets.cfg
+# otp_seet = None if no value has been set on secrets.cfg
 try:
     otp_seed = config.get("credentials", "otp_seed")
-except:
+except Exception:
     otp_seed = None
 
 # css selectors definition
@@ -28,12 +28,13 @@ password_selector = '#password'
 otp_selector = '#twoFactorCode'
 loginBtn_selector = '#login_btn'
 loginBtn2fa_selector = '#login_btn_2fa'
-firstMessage_selector = 'div.conversation:nth-child(1) > div:nth-child(5) > h4:nth-child(1)'
+firstMessage_selector = 'div.conversation:nth-child(1) > \
+    div:nth-child(5) > h4:nth-child(1)'
 
 # screenshot file name settings
 screenshotName = 'protonmail'
 screenshotPath = "./screenshots/"
-global screenshotFileName
+screenshotFileName = None
 screenshotCount = 1
 
 # pyppeteer settings
@@ -68,37 +69,48 @@ async def main():
     # Open login site
     await page.goto(url)
     takeScreenshot()
-    await page.screenshot({'path': screenshotFileName, 'fullPage': False, 'webkit-print-color-adjust': True})
+    await page.screenshot({'path': screenshotFileName,
+                           'fullPage': False,
+                           'webkit-print-color-adjust': True})
 
     # Enter username
-    await page.click(username_selector, delay=randomNum(minClickTime, maxClickTime))
+    await page.click(username_selector,
+                     delay=randomNum(minClickTime, maxClickTime))
     await page.keyboard.type(username)
 
     # Enter password
-    await page.click(password_selector, delay=randomNum(minClickTime, maxClickTime))
+    await page.click(password_selector,
+                     delay=randomNum(minClickTime, maxClickTime))
     await page.keyboard.type(password)
 
     # Click login button
-    await page.click(loginBtn_selector, delay=randomNum(minClickTime, maxClickTime))
+    await page.click(loginBtn_selector,
+                     delay=randomNum(minClickTime, maxClickTime))
 
-    # Enter otp if opt_seed properly configured
+    # Enters otp if opt_seed properly configured
     if otp_seed is not None:
-        await page.waitForSelector(otp_selector)  #  Enter otp if required
-        await page.click(otp_selector, delay=randomNum(minClickTime, maxClickTime))
+        await page.waitForSelector(otp_selector)
+        await page.click(otp_selector,
+                         delay=randomNum(minClickTime, maxClickTime))
 
         currentOtp = mintotp.totp(otp_seed)
         await page.keyboard.type(currentOtp)
         print(" > OTP: " + currentOtp)
         takeScreenshot()
-        await page.screenshot({'path': screenshotFileName, 'fullPage': False, 'webkit-print-color-adjust': True})
-        await page.click(loginBtn2fa_selector, delay=randomNum(minClickTime, maxClickTime))
+        await page.screenshot({'path': screenshotFileName,
+                               'fullPage': False,
+                               'webkit-print-color-adjust': True})
+        await page.click(loginBtn2fa_selector,
+                         delay=randomNum(minClickTime, maxClickTime))
     else:
         print(" > No otp_seed found")
 
-    # Opening inbox
+    # Opening inbox
     await page.waitForSelector(firstMessage_selector)
     takeScreenshot()
-    await page.screenshot({'path': screenshotFileName, 'fullPage': False, 'webkit-print-color-adjust': True})
+    await page.screenshot({'path': screenshotFileName,
+                           'fullPage': False,
+                           'webkit-print-color-adjust': True})
     await browser.close()
     print(" > Browser closed")
 
